@@ -1,4 +1,4 @@
-package tencent_im
+package im
 
 import (
 	"github.com/stretchr/testify/assert"

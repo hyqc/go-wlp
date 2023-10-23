@@ -1,4 +1,4 @@
-package tencent_im
+package im
 
 import (
 	"crypto/sha256"
@@ -19,7 +19,7 @@ type Sign struct {
 
 type SignOptions struct {
 	Token        string `json:"token"`         // 鉴权的token
-	Expire       int64  `json:"expire"`        // 签名过期时间秒
+	Expire       int64  `json:"Expire"`        // 签名过期时间秒
 	IgnoreExpire bool   `json:"ignore_expire"` // 是否忽略时间验证
 }
 

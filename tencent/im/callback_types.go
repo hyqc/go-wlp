@@ -1,4 +1,4 @@
-package tencent_im
+package im
 
 /*****************************/
 // IM在线状态回调
@@ -20,11 +20,21 @@ type CallbackOnlineStatusReq struct {
 }
 
 const (
-	OK        = "OK"   // 成功
-	OK_CODE   = 0      // 成功
-	FAIL      = "FAIL" // 失败
-	FAIL_CODE = 1      // 失败
+	OK       = "OK"   // 成功
+	OkCode   = 0      // 成功
+	FAIL     = "FAIL" // 失败
+	FailCode = 1      // 失败
 )
+
+const (
+	// CustomCodeErrNoReply IM回调自定义错误码120001-130000之间
+	CustomCodeErrNoReply = 120002 // 24时间限制内未得到对方回应
+)
+
+// CodeMsg 错误消息
+var CodeMsg = map[int]string{
+	CustomCodeErrNoReply: "24小时只能发送1条消息",
+}
 
 type CallbackOnlineStatusResp struct {
 	ActionStatus string `json:"ActionStatus"`
