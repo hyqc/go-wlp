@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	jwtToken "github.com/go-micro/plugins/v4/auth/jwt/token"
 	"go-micro.dev/v4/auth"
@@ -15,40 +15,34 @@ const (
 	authorization = "Authorization"
 )
 
-func GinJwt(jwt jwtToken.Provider) gin.HandlerFunc {
+func JWTCheck(jwt jwtToken.Provider) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authHeader := ctx.GetHeader(authorization)
 		if !strings.HasPrefix(authHeader, auth.BearerScheme) {
-			response.Response(ctx, code.NewCode(code.AuthFailed))
+			response.Response(ctx, code.NewCode(code.AuthTokenInvalid))
 			return
 		}
 		token := strings.TrimPrefix(authHeader, auth.BearerScheme)
 		if token == "" {
-			response.Failed(ctx, errors.New("token为空"))
-			ctx.Abort()
+			response.Response(ctx, code.NewCode(code.AuthTokenInvalid))
 			return
 		}
-		l.Info("token信息:", token)
+		// TODO
+		fmt.Println("token: ", token)
 		account, err := jwt.Inspect(token)
 		if err != nil {
-			response.Failed(ctx, errors.Wrap(err, "token验证失败"))
-			ctx.Abort()
+			response.Response(ctx, code.NewCode(code.AuthTokenInspectInvalid))
 			return
 		}
 
-		uid, _ := strconv.Atoi(account.ID)
-		/*		_, err = api.CheckToken(ctx, &user.CheckTokenReq{
-					Uids:   int32(uid),
-					Token: token,
-				})
-				if err != nil {
-					response.Failed(ctx, err)
-					ctx.Abort()
-					return
-				}*/
-		l.Infof("token解析后数据:%+v", account)
+		uid, err := strconv.Atoi(account.ID)
+		if err != nil {
+			response.Response(ctx, code.NewCode(code.AuthTokenInfoInvalid))
+			return
+		}
+		// TODO
+		fmt.Println("token decode: ", account)
 		ctx.Set("uid", uid)
-		ctx.Set("gatewayId", account.Metadata["gatewayId"])
 		ctx.Next()
 	}
 }

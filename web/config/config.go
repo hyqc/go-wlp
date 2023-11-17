@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/go-micro/plugins/v4/auth/jwt/token"
 	"web/config/server"
 	"web/pkg/core"
 )
@@ -11,6 +12,7 @@ type Config struct {
 
 var (
 	App = NewConfig()
+	JWT token.Provider
 )
 
 func NewConfig() *Config {

@@ -3,7 +3,7 @@ package serve
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"web/middleware"
+	"web/app/account/controller"
 )
 
 type Serve struct {
@@ -15,7 +15,16 @@ func (s Serve) init() *gin.Engine {
 	engine := gin.Default()
 	//健康检查
 	engine.GET(HeartbeatPath, check)
-	auth := engine.Group("/debug/v1", middleware.GinJwt(global.Srv.User, global.Jwt), log.GinLog())
+	root := engine.Group("/")
+	account := root.Group("/account")
+	{
+		account.POST("/login", controller.Login)
+	}
+
+	//auth := root.Group("/auth", middleware.JWTCheck(config.JWT))
+	//{
+	//
+	//}
 
 	return engine
 }
@@ -25,5 +34,6 @@ func check(ctx *gin.Context) {
 }
 
 func (s Serve) Start() error {
+
 	return nil
 }
